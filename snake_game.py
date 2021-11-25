@@ -55,4 +55,46 @@ def our_snake(snake_block, snake_list):
 def message(msg, color):
     mesg = font_style.render(msg, True, color)
     # center the message on the screen by dividing the width and the height
+    # the .blit method is how you copy contents between surfaces, one to another
     dis.blit(mesg, [dis_width / 6, dis_height / 3])
+
+
+def gameLoop():
+    game_over = False
+    game_close = False
+
+    x1 = dis_width / 2
+    y1 = dis_height / 2
+
+    x1_change = 0
+    y1_change = 0
+
+    snake_List = []
+    Length_of_snake = 1
+
+    # random(start, stop, step)
+    foodx = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10
+    foody = round(random.randrange(0, dis_height - snake_block) / 10) * 10
+
+    # loop to test for game over
+    while not game_over:
+        # when the game is over or lost give the player the option to continue or quit
+        while game_close == True:
+            # fill the game over screen with blue
+            dis.fill(blue)
+            # send the user a message
+            message("You Lost! Press C-Play Again or Q-Quit", red)
+            # score is equal to the length of the snake minus one
+            your_score(Length_of_snake - 1)
+            # refresh the display
+            pygame.display.update()
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_q:
+                            game_over = True
+                            game_close = False
+                        if event.ley == pygame.K_c:
+                            gameloop()
+
+
