@@ -1,8 +1,7 @@
 # reference: https://www.edureka.co/blog/snake-game-with-pygame/
 
-import pygame
-import time
 import random
+import pygame
 
 # initialize pygame
 pygame.init()
@@ -36,8 +35,7 @@ font_style = pygame.font.SysFont("bahnschrift", 25)
 score_font = pygame.font.SysFont("comicsansms", 35)
 
 
-# create function to track score
-def your_score(score):
+def Your_score(score):
     value = score_font.render("Your Score: " + str(score), True, yellow)
     dis.blit(value, [0, 0])
 
@@ -73,33 +71,37 @@ def gameLoop():
     Length_of_snake = 1
 
     # random(start, stop, step)
-    foodx = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10
-    foody = round(random.randrange(0, dis_height - snake_block) / 10) * 10
+    foodx = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10.0
+    foody = round(random.randrange(0, dis_height - snake_block) / 10.0) * 10.0
 
     # loop to test for game over
     while not game_over:
-        # when the game is over or lost give the player the option to continue or quit
+
         while game_close == True:
             # fill the game over screen with blue
             dis.fill(blue)
             # send the user a message
             message("You Lost! Press C-Play Again or Q-Quit", red)
-            # score is equal to the length of the snake minus one
-            your_score(Length_of_snake - 1)
-            # refresh the display
+            Your_score(Length_of_snake - 1)
             pygame.display.update()
 
+            # check for user key input after each pygame event and
             for event in pygame.event.get():
+                # scan for keyboard input
                 if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_q:
-                            game_over = True
-                            game_close = False
-                        if event.ley == pygame.K_c:
-                            gameloop()
+                    # if user presses q then the game is over
+                    if event.key == pygame.K_q:
+                        game_over = True
+                        game_close = False
+                    # if user presses see then run gameLoop
+                    if event.key == pygame.K_c:
+                        gameLoop()
 
         for event in pygame.event.get():
+            # if user clicks the close button then quit
             if event.type == pygame.QUIT:
-                game_over == True
+                game_over = True
+            # if user presses up, down, left, right then move the snake along each x, y, axis
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     x1_change = -snake_block
@@ -114,5 +116,37 @@ def gameLoop():
                     y1_change = snake_block
                     x1_change = 0
 
+        if x1 >= dis_width or x1 < 0 or y1 >= dis_height or y1 < 0:
+            game_close = True
+        x1 += x1_change
+        y1 += y1_change
+        dis.fill(blue)
+        pygame.draw.rect(dis, green, [foodx, foody, snake_block, snake_block])
+        snake_Head = []
+        snake_Head.append(x1)
+        snake_Head.append(y1)
+        snake_List.append(snake_Head)
+        if len(snake_List) > Length_of_snake:
+            del snake_List[0]
+
+        for x in snake_List[:-1]:
+            if x == snake_Head:
+                game_close = True
+
+        our_snake(snake_block, snake_List)
+        Your_score(Length_of_snake - 1)
+
+        pygame.display.update()
+
+        if x1 == foodx and y1 == foody:
+            foodx = round(random.randrange(0, dis_width - snake_block) / 10.0) * 10.0
+            foody = round(random.randrange(0, dis_height - snake_block) / 10.0) * 10.0
+            Length_of_snake += 1
+
+        clock.tick(snake_speed)
+
+    pygame.quit()
+    quit()
 
 
+gameLoop()
